@@ -1,11 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My friends</title>
+    <style>
+        .row {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        img {
+            width: 150px;
+            height: 100px;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Friends</h1>
+    <div>
+        <div class="row">
+            <img src="/images/infographic-business-template-options-icon-object-free-png.webp" alt="">
+            <h1>My Friends</h1>
+        </div>
+        <h2>Add a new friend</h2>
+        <div id="currentDate"></div>
+        <form method="POST">
+            <input type="text" name="name" placeholder="Name">
+            <input type="text" name="email" placeholder="Email">
+            <input type="text" name="phone" placeholder="Phone">
+            <input type="text" name="age" placeholder="Age">
+            <button type="submit" id="add-btn">Add friend</button>
+        </form>
+    </div>
+    <h2>Search</h2>
+    <form action="/search" method="GET">
+        <input type="text" name="name" placeholder="Name">
+        <button type="submit" id="search-btn">Search</button>
+    </form>
+    <div id="friends">
+        <h2>Friend</h2>
+        <ul id="friend-list"></ul>
+    </div>
+    </div>
+    <script>
+        fetch('/getCurrentDate')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('currentDate').innerHTML = data.currentDate;
+            });
+        const addButton = document.getElementById('add-btn');
+        addButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            const data = {
+                name: document.querySelector('input[name="name"]').value,
+                email: document.querySelector('input[name="email"]').value,
+                phone: document.querySelector('input[name="phone"]').value,
+                age: document.querySelector('input[name="age"]').value
+            };
+            const { name, email, phone, age } = data;
+            fetch('/addFriend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    phone,
+                    age
+                })
+            })
+                .then(response => response.json())
+            if (data.name && data.email && data.phone && data.age) {
+                const li = document.createElement('li');
+                li.innerHTML = `${data.name} - ${data.email} - ${data.phone} - ${data.age}`;
+                document.getElementById('friend-list').appendChild(li);
+            }
+        });
+        // Search Function
+        const searchButton = document.getElementById('search-btn');
+        searchButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            fetch('/search')
+                .then(response => response.json())
+                .then(data => {
+                    const { name, email, phone, age } = data;
+                    const li = document.createElement('li');
+                    li.innerHTML = `${name} - ${email} - ${phone} - ${age}`;
+                    document.getElementById('friend-list').appendChild(li);
+                });
+        })
+    </script>
 </body>
+
 </html>
