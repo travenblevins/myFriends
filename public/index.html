@@ -79,19 +79,32 @@
                 document.getElementById('friend-list').appendChild(li);
             }
         });
-        // Search Function
         const searchButton = document.getElementById('search-btn');
-        searchButton.addEventListener('click', (event) => {
-            event.preventDefault();
-            fetch('/search')
-                .then(response => response.json())
-                .then(data => {
-                    const { name, email, phone, age } = data;
-                    const li = document.createElement('li');
-                    li.innerHTML = `${name} - ${email} - ${phone} - ${age}`;
-                    document.getElementById('friend-list').appendChild(li);
+        const friendListElement = document.getElementById('friend-list');
+
+        fetch('/search')
+            .then(response => response.json())
+            .then(friendData => {
+                const friends = friendData.friends;  // Access the friends array
+                console.log(friends)
+                if(friends === undefined){
+                    return;
+                }
+                friends.forEach(friend => {
+                    const searchName = document.querySelector('input[name="name"]').value.trim().toLowerCase();
+                    if (friend.name.toLowerCase() === searchName) {
+                        const li = document.createElement('li');
+                        li.innerHTML = `${friend.name} - ${friend.email} - ${friend.phone} - ${friend.age}`;
+                        friendListElement.appendChild(li);
+                    }
                 });
-        })
+                if (friendListElement.innerHTML === '') {
+                    friendListElement.innerHTML = '<li>No friend found</li>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     </script>
 </body>
 

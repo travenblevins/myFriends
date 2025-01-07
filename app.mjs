@@ -14,8 +14,7 @@ app.get('/getCurrentDate', (req, res) => {
 
 app.get('/search', (req, res) => {
     const name = req.query.name;
-    const friend = friends.find(friend => friend.name === name);
-    res.json({ 'friend': friend });
+    res.json({ 'name': name });
 })
 
 app.post('/addFriend', (req, res) => {
