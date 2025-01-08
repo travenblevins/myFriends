@@ -29,13 +29,6 @@ app.post('/addFriend', (req, res) => {
     res.json({ friend });
 });
 
-
-app.get('/searchFriend', (req, res) => {
-    const name = req.params.name;
-    const friend = friends.find(friend => friend.name === name);
-    res.json({ 'friend': friend });
-})
-
 app.listen(port, () => {
     console.log(`Server is running at port ${port}`);
 });
